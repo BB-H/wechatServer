@@ -1,0 +1,19 @@
+{% autoescape off %}
+<xml>
+<ToUserName><![CDATA[{{toUser}}]]></ToUserName>
+<FromUserName><![CDATA[{{fromUser}}]]></FromUserName>
+<CreateTime>{{createTime}}</CreateTime>
+<MsgType><![CDATA[{{msgType}}]]></MsgType>
+<ArticleCount>{{count}}</ArticleCount>
+<Articles>
+{% for item in items %}
+<item>
+<Title><![CDATA[{{item.title}}]]></Title> 
+<Description><![CDATA[{{item.desc}}]]></Description>
+<PicUrl><![CDATA[{{item.picUrl}}]]></PicUrl>
+<Url><![CDATA[{{item.url}}]]></Url>
+</item>
+{% endfor %}
+</Articles>
+</xml>
+{% endautoescape %}
