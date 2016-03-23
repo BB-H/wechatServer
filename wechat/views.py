@@ -7,6 +7,7 @@ from django.utils.html import escape
 from django.views.decorators.csrf import csrf_exempt
 from xml.etree import ElementTree
 from wechat import message_res
+import urllib2,json
 
 
 #Store MsgId for all incoming message.
@@ -68,6 +69,13 @@ def doTextMessageEvent(request,elementTree):
 	m = searchPattern.search(content)
 	if m:
 		searchKeyword = searchPattern.sub("",content)
+		resp = urllib2.urlopen(settings.SOLR_SVC %(urllib2.quote(searchKeyword),0,10))
+		jsonStr = resp.read()
+		itemJson = json.loads(jsonStr)
+		itemTotal = itemJson['response']['numFound']
+		mainTitle = "为你找到%s件\"%s\"相关的商品" %(itemTotal,searchKeyword)
+
+		
 		me = elementTree.find('ToUserName').text
 		msgTo = elementTree.find('FromUserName').text
 		createTime = int(time.time())
@@ -75,10 +83,28 @@ def doTextMessageEvent(request,elementTree):
 			'toUser':msgTo,
 			'fromUser':me,
 			'createTime':createTime,
-			'msgType':"text",
-			'content':searchKeyword.strip()
+			'msgType':"news",
+			'content':searchKeyword.strip(),
+			'count':2,
+			'items':[]
 		}
-		return render(request, 'message.html', context)
+		for i, doc in enumerate(itemJson['response']['docs']):
+			if i==0:
+				title = mainTitle
+				pic = "http://108.61.126.123/static/images/360.jpg"
+				url = "http://TODO-mysearchListPage.com"
+			else:
+				title = doc['name']
+				pic = "http://108.61.126.123/static/images/200.png"
+				url = "http://TODO-itemDetailPage.com"
+			context['items'].append({
+				"title":title,
+				"desc":"XXXXXXXXXX",
+				"picUrl":pic,
+				"url":url
+				})
+
+		return render(request, 'QueryResults.html', context)
 	
 	
 	

@@ -122,4 +122,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # customized settings
-WECHAT_TOKEN = "xxxxxxxxxxxxxx"
+WECHAT_TOKEN = "keepintouch_lei"
+SOLR_SVC = r"http://192.168.0.2:6789/solr/myCommodities/select?q=name:%s&start=%s&rows=%s&wt=json" #parameters: keyword,start,count
