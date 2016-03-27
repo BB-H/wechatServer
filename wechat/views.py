@@ -85,21 +85,26 @@ def doTextMessageEvent(request,elementTree):
 			'createTime':createTime,
 			'msgType':"news",
 			'content':searchKeyword.strip(),
-			'count':2,
+			'count':min(10,itemTotal),
 			'items':[]
 		}
 		for i, doc in enumerate(itemJson['response']['docs']):
 			if i==0:
 				title = mainTitle
-				pic = "http://108.61.126.123/static/images/360.jpg"
+				pic = "http://108.61.126.123/static/images/360-2.png"
 				url = "http://TODO-mysearchListPage.com"
 			else:
 				title = doc['name']
-				pic = "http://108.61.126.123/static/images/200.png"
+				if "pictureUrl" in doc:
+					pic = doc['pictureUrl']
+					if not pic.startswith("http://"):
+						pic = "http://"+pic
+				else:
+					pic = "http://108.61.126.123/static/images/200.jpg"
 				url = "http://TODO-itemDetailPage.com"
 			context['items'].append({
 				"title":title,
-				"desc":"XXXXXXXXXX",
+				"desc":"",
 				"picUrl":pic,
 				"url":url
 				})
